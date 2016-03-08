@@ -1216,6 +1216,28 @@ describe('angucomplete-alt', function() {
         $timeout.flush();
       }).not.toThrow();
     });
+
+    it('should select the matching suggestion when the search text fully matches any of the attributes', function() {
+      var element = angular.element('<div angucomplete-alt auto-match-multiple="true" id="ex1" placeholder="Search people" selected-object="selectedPerson" local-data="people" search-fields="name" title-field="name" minlength="2"/>');
+      $scope.selectedPerson = undefined;
+      $scope.people = [
+        {name: 'Jim Beam', email: 'jbeam@example.com'},
+        {name: 'John Elway Jr', email: 'elwayjr@example.com'},
+        {name: 'John Elway', email: 'elway@example.com'}
+      ];
+      $compile(element)($scope);
+      $scope.$digest();
+
+      var inputField = element.find('#ex1_value');
+      var y = $.Event('keyup');
+      y.which = 121;
+
+      inputField.val('john elway');
+      inputField.trigger('input');
+      inputField.trigger(y);
+      $timeout.flush();
+      expect($scope.selectedPerson.originalObject).toEqual($scope.people[2]);
+    });
   });
 
   describe('key event handling', function() {

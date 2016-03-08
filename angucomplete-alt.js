@@ -594,12 +594,20 @@
               formattedDesc = findMatchString(description, str);
             }
 
-            scope.results[scope.results.length] = {
+            scope.results[i] = {
               title: formattedText,
               description: formattedDesc,
               image: image,
               originalObject: responseData[i]
             };
+
+            if (scope.autoMatchMultiple  &&
+                checkExactMatch(scope.results[i],
+                  {title: text, desc: description || ''}, scope.searchStr)) {
+              scope.showDropdown = false;
+              displayNoResults = false;
+              break;
+            }
           }
 
         } else {
@@ -806,6 +814,7 @@
         fieldRequiredClass: '@',
         inputChanged: '=',
         autoMatch: '@',
+        autoMatchMultiple: '@',
         focusOut: '&',
         focusIn: '&',
         fieldTabindex: '@',
